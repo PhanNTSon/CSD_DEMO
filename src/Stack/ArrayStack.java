@@ -8,21 +8,21 @@ package Stack;
  *
  * @author ADMIN
  */
-public class ArrayStack<T> {
+public class ArrayStack {
 
-    private T storager[];
+    private Object storager[];
     private int size;
     private int cap;
     private int top;
 
     public ArrayStack(int cap) {
         this.size = 0;
-        this.storager = (T[]) new Object[cap];
+        this.storager = new Object[cap];
         this.cap = cap;
         this.top = -1;
     }
 
-    public T[] getStorager() {
+    public Object[] getStorager() {
         return storager;
     }
 
@@ -44,7 +44,7 @@ public class ArrayStack<T> {
     
     public void clear(){
         this.size = 0;
-        this.storager = (T[]) new Object[this.cap];
+        this.storager = new Object[this.cap];
         this.top = -1;
     }
     
@@ -54,7 +54,7 @@ public class ArrayStack<T> {
         }
     }
 
-    public void push(T data) {
+    public void push(Object data) {
         if (this.cap == this.size) {
             throw new ArrayStoreException("STACK IS FULL");
         }
@@ -63,18 +63,18 @@ public class ArrayStack<T> {
         this.size++;
     }
 
-    public T pop() {
+    public Object pop() {
         if (this.isEmpty()) {
             throw new ArrayStoreException("STACK EMPTY");
         }
-        T data = this.storager[top];
+        Object data = this.storager[top];
         this.storager[top] = null;
         this.size--;
         this.top--;
         return data;
     }
 
-    public T peek() {
+    public Object peek() {
         if (this.isEmpty()) {
             throw new ArrayStoreException("STACK EMPTY");
         }

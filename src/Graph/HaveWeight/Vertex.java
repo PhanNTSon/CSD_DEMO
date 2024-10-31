@@ -10,7 +10,7 @@ import java.util.HashMap;
  *
  * @author ADMIN
  */
-public class Vertex implements Comparable<Vertex> {
+public class Vertex  {
 
     private String label;
     private HashMap<Vertex, Integer> adjList;
@@ -32,8 +32,5 @@ public class Vertex implements Comparable<Vertex> {
         this.label = label;
     }
 
-    @Override
-    public int compareTo(Vertex o) {
-        return -1;
-    }
+    
 }

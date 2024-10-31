@@ -44,6 +44,11 @@ public class Node{
         this.right = right;
     }
 
+    @Override
+    public String toString() {
+        return this.key.toString();
+    }
+
    
     
 }

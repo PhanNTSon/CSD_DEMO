@@ -123,40 +123,26 @@ public class Graph {
      * @param vertexStart
      */
     public void BFS(String vertexStart) {
-        // Initiate Queue/ Priority Queue to store vertex
-        Queue.ArrayQueue<Vertex> queue = new Queue.ArrayQueue<>(100000);
-        // Initiate Array to store visisted vertex
-//        List<Vertex> visitedArr = new ArrayList<>(this.vertices.size());
+        Queue.ArrayQueue queue = new Queue.ArrayQueue(100000);
         Set<Vertex> visitedArr = new HashSet<>(); // Reduce time to O(1)
-        // Get start vertex in Graph
         Vertex startVertex = this.getVertex(vertexStart);
-        // Add start vertex into Queue to start
         queue.enQueue(startVertex);
+
         // Loop while Queue is not empty
         while (!queue.isEmpty()) {
-            // Take out the header of Queue as current vertex 
-            Vertex currentV = queue.deQueue();
+            Vertex currentV = (Vertex) queue.deQueue();
+
             // If vertex is not visited before
             if (!visitedArr.contains(currentV)) {
-                // Visist vertex
                 System.out.print(currentV.getLabel() + " ");
-                // Add current Vertex to Array as visisted
                 visitedArr.add(currentV);
-                // Add all vertices that connected to current vertex
-//                currentV.getAdjList().keySet()
-//                        .stream()
-//                        .forEach(adjVertex -> {
-//                            queue.enQueue(adjVertex);
-//                        });
-                // Using for-loop for better understanding
-                for (Vertex v : currentV.getAdjList().keySet()) {
-                    // If visitedArray not contains vertex 
-                    if (!visitedArr.contains(v)) {
-                        // Add to queue
-                        queue.enQueue(v);
-                    }
-                }
 
+                // Add all vertices that connected to current vertex
+                currentV.getAdjList().keySet()
+                        .stream()
+                        .forEach(adjVertex -> {
+                            queue.enQueue(adjVertex);
+                        });
             }
         }
     }
@@ -168,24 +154,20 @@ public class Graph {
      * @param vertexStart
      */
     public void DFS(String vertexStart) {
-        // Initiate Stack/ Priority Stack to store vertex
-        Stack.ArrayStack<Vertex> stack = new Stack.ArrayStack<>(1000000);
-        // Initiate Array to store visisted vertex
+        Stack.ArrayStack stack = new Stack.ArrayStack(1000000);
         Set<Vertex> visitedArr = new HashSet<>(); // Reduce time to O(1)
-        // Get start vertex in Graph
         Vertex startVertex = this.getVertex(vertexStart);
-        // Add start vertex into Stack to start
         stack.push(startVertex);
+
         // Loop while Queue is not empty
         while (!stack.isEmpty()) {
-            // Take out the top of Stack as current vertex 
-            Vertex currentV = stack.pop();
+            Vertex currentV = (Vertex) stack.pop();
+
             // If vertex is not visited before
             if (!visitedArr.contains(currentV)) {
-                // Visist vertex
                 System.out.print(currentV.getLabel() + " ");
-                // Add current Vertex to Array as visisted
                 visitedArr.add(currentV);
+
                 // Add all vertices that connected to current vertex
                 for (Vertex v : currentV.getAdjList().keySet()) {
                     // If visitedArray not contains vertex 
@@ -200,30 +182,6 @@ public class Graph {
     }
 
     /**
-     * DFS Using Recursion.
-     *
-     * @param startVertex
-     * @param visitedArr
-     */
-    public void DFS_R(String startVertex, ArrayList<Vertex> visitedArr) {
-        // Get current Vertex
-        // If current Vertex is not visited
-        // 
-
-        /*
-        Vertex start = this.getVertex(startVertex);
-        visited.add(start);
-        System.out.print(start.label);
-        start.adjList.entrySet().forEach(entry ->
-        {
-            if (!visited.contains(entry.getKey())) {
-                DFSRecursive(entry.getKey().label, visited);
-            }
-        });
-         */
-    }
-
-    /**
      * Dijkstra Algorithm find the shortest path. This algorithm running base on
      * BFS and calculate the shortest path to Destination Vertex from Start
      * Vertex.
@@ -232,7 +190,6 @@ public class Graph {
      * @param desV
      */
     public void Dijkstra(String startV, String desV) {
-        // Map <Vertex, Int> distance to store current total Distance to vertex
         HashMap<Vertex, Integer> distance = new HashMap<>();
         /*
         Set all vertices in Graph as key and their value is Infinite, except for
@@ -249,12 +206,10 @@ public class Graph {
          */
         HashMap<Vertex, Vertex> previous = new HashMap<>();
         previous.put(this.getVertex(desV), this.getVertex(startV));
-        // Initiate Queue cause the Algorithm work base on BFS
         ArrayDeque<Vertex> queue = new ArrayDeque<>(19999);
-        // Initiate Array store visisted Vertices
         ArrayList<Vertex> visitedArr = new ArrayList<>();
-        // Enqueue StartV
         queue.addLast(this.getVertex(startV));
+
         // Loop until queue is not empty
         while (!queue.isEmpty()) {
             queue.stream()
@@ -416,23 +371,30 @@ public class Graph {
      * Prims Algorithm.
      */
     public void MST_Prims(String startV) {
-        // Collected edges
         List<Edge> mst = new ArrayList<>();
-        // Visited Array store Visited Vertex
         List<Vertex> visitedV = new ArrayList<>();
-        // Priority Queue store edges
-        LinkedPQueue<Edge> queue = new LinkedPQueue<>(1000000);
-        // Vertex Start enqueue
+        LinkedPQueue edgesQueue = new LinkedPQueue(1000000);
         Vertex s = this.getVertex(startV);
+
+        Comparator<Object> c = new Comparator<Object>() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                return Integer.compare(((Edge) o1).getWeight(), ((Edge) o2).getWeight());
+            }
+        };
+        // Add all Edges to queue
         s.getAdjList().entrySet().
                 forEach(entry -> {
-                    queue.enQueue(new Edge(s, entry.getKey(), entry.getValue()));
+
+                    edgesQueue.enQueue(new Edge(s, entry.getKey(), entry.getValue()), c);
                 });
+
         visitedV.add(s);
+
         // While Queue is not Empty
-        while (!queue.isEmpty()) {
+        while (!edgesQueue.isEmpty()) {
             // Take out smallest Edge 
-            Edge current = queue.deQueue();
+            Edge current = (Edge) edgesQueue.deQueue();
             // Take out vertex To of current Edge
             Vertex vTo = current.getTo();
             // Check if vTo is visited
@@ -440,9 +402,11 @@ public class Graph {
                 // If not then add edge to list and add vTo in visited
                 mst.add(current);
                 visitedV.add(vTo);
+
+                // Add all Edges connected to vTo into Queue
                 vTo.getAdjList().entrySet()
                         .forEach(entry -> {
-                            queue.enQueue(new Edge(vTo, entry.getKey(), entry.getValue()));
+                            edgesQueue.enQueue(new Edge(vTo, entry.getKey(), entry.getValue()), c);
                         });
             }
 
@@ -455,17 +419,30 @@ public class Graph {
     public Graph MST_Kruskal() {
         Graph returnGraph = new Graph();
         List<Vertex> visitedV = new ArrayList<>();
-        LinkedPQueue<Edge> queue = new LinkedPQueue<>(100000);
+        LinkedPQueue edgesQueue = new LinkedPQueue(100000);
+
+        Comparator<Object> c = new Comparator<Object>() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                return Integer.compare(((Edge) o1).getWeight(), ((Edge) o2).getWeight());
+            }
+        };
+        
         this.vertices.forEach(vertex -> {
             vertex.getAdjList().entrySet()
                     .forEach(entry -> {
-                        queue.enQueue(new Edge(vertex, entry.getKey(), entry.getValue()));
+                        edgesQueue.enQueue(new Edge(vertex, entry.getKey(), entry.getValue()), c);
                     });
         });
-        while (!queue.isEmpty()) {
-            Edge current = queue.deQueue();
+
+        // Begin loop until queue is empty
+        while (!edgesQueue.isEmpty()) {
+            Edge current = (Edge) edgesQueue.deQueue();
+            
             Vertex v1 = current.getStart();
             Vertex v2 = current.getTo();
+            
+            // If v1 and v2 is not visited then add into returnGraph
             if (!visitedV.contains(v1) || !visitedV.contains(v2)) {
                 returnGraph.addEdge(current.getStart().getLabel(), current.getTo().getLabel(), current.getWeight());
             }
@@ -511,32 +488,30 @@ public class Graph {
         List<String> eulerPath = new ArrayList<>();
         // Using DFS, therefore using Stack
         Stack.LinkedStack stack = new Stack.LinkedStack();
-        
+
         Vertex sV = newG.getVertex(startV);
         // Push in sV to stack
         stack.push(sV);
-        
+
         // Begin loop
-         while (!stack.isEmpty()){
-             Vertex current = (Vertex) stack.pop();
-             eulerPath.add(current.getLabel());
-             current.getAdjList().entrySet()
-                     .forEach(entry->{
-                         
-                     });
-         }
-        
+        while (!stack.isEmpty()) {
+            Vertex current = (Vertex) stack.pop();
+            eulerPath.add(current.getLabel());
+            current.getAdjList().entrySet()
+                    .forEach(entry -> {
+
+                    });
+        }
 
         return eulerPath;
     }
-    
+
     public List<String> getEulerCircuit(String startV, Graph graph) {
         Graph newG = graph;
         if (!this.checkHaveEulerCircuit()) {
             return null;
         }
         List<String> eulerCircuit = new ArrayList<>();
-        
 
         return eulerCircuit;
     }

@@ -4,14 +4,17 @@
  */
 package Tree;
 
+import java.util.Comparator;
+import java.util.Random;
+
 /**
  *
  * @author ADMIN
  * @param <T>
  */
-public class AVL<T extends Comparable<T>> {
+public class AVL {
 
-    private Node<T> root;
+    private Node root;
     private int size;
 
     public AVL() {
@@ -28,32 +31,30 @@ public class AVL<T extends Comparable<T>> {
      *
      * @param key
      */
-    public void insertNode(T key) {
-        // Initiate new Node
-        Node<T> newNode = new Node(key);
+    public void insertNode(Object key, Comparator<Object> c) {
+        Node newNode = new Node(key);
         // Check if Tree is empty
         if (this.isEmpty()) {
             this.root = newNode;
         } else {                // Else Tree is not empty
-            // Initiate Node current pointed to the current Node
-            Node<T> current = this.root;
-            // Initate Node parent pointed to Current's previous Parent Node
-            Node<T> parent = null;
+            Node current = this.root;
+            Node parent = null;
             /*
             Start loop to get the location where to put new Node in base on the
             position of Node Current.
              */
             while (current != null) {
-                // Set the Parent to Current in case Current move down
                 parent = current;
+
                 // Case key already exist in Tree
-                if (current.getKey().compareTo(key) == 0) {
+                if (c.compare(key, current.getKey()) == 0) {
                     System.out.println("ALREADY EXIT!");
                     return;
+
                     // Case key is smaller than the Current's Key Node
-                } else if (key.compareTo(current.getKey()) == -1) {
-                    // Move current to the left branch
+                } else if (c.compare(key, current.getKey()) < 0) {
                     current = current.getLeft();
+
                     // Case key is larger
                 } else {
                     // Move current to the Right branch
@@ -67,11 +68,10 @@ public class AVL<T extends Comparable<T>> {
              */
 
             // If key is larger than Parent's key
-            if (key.compareTo(parent.getKey()) == 1) {
-                // Add right-child to Node Parent
+            if (c.compare(key, parent.getKey()) > 0) {
                 parent.setRight(newNode);
+
             } else { // If key is smaller than
-                // Add left-child to Node Parent
                 parent.setLeft(newNode);
             }
         }
@@ -94,32 +94,22 @@ public class AVL<T extends Comparable<T>> {
      * @param key
      * @return
      */
-    public Node<T> insertNodeRecursion(Node<T> root, T key) {
+    public Node insertNodeRecursion(Node root, Object key, Comparator<Object> c) {
         // Check if root is null
         if (root == null) {
-            // Increase size
             this.size++;
-            // Return a new Node with input key
             return new Node(key);
+
             // Else if key is larger than root's key
-        } else if (key.compareTo(root.getKey()) == 1) {
-            /*
-        Set root's right Node is insertNodeRecursion with parameters are root's
-        right Node as a new root and current key.
-             */
-            root.setRight(insertNodeRecursion(root.getRight(), key));
+        } else if (c.compare(key, root.getKey()) > 0) {
+            root.setRight(insertNodeRecursion(root.getRight(), key, c));
+
             // Else if key is smaller than root's key
-        } else if (key.compareTo(root.getKey()) == -1) {
-            /*
-        Set root's left Node is insertNodeRecursion with paramenters are root's
-        left Node as a new root and current key
-             */
-            root.setLeft(insertNodeRecursion(root.getLeft(), key));
+        } else if (c.compare(key, root.getKey()) < 0) {
+            root.setLeft(insertNodeRecursion(root.getLeft(), key, c));
         }
-        // Increase size
         this.size++;
 
-        // Balance Tree after adding New Node to tree
         int balance = this.getBalance(root);
         /*
         If balance is 0 or 1 then is Balance, else if larger than 1 then its on
@@ -127,20 +117,23 @@ public class AVL<T extends Comparable<T>> {
          */
         if (balance > 1) {          // Case Left
             // If key is smaller than Root's left child' key
-            if (key.compareTo(root.getLeft().getKey()) == -1) {
+            if (c.compare(key, root.getLeft().getKey()) < 0) {
                 // Into case LEFT-LEFT, Rotate Right current Root.
                 root = this.rotateRight(root);
+
             } else {
                 // Case LEFT-RIGHT, Rotate LEFT Root's Left child
                 root.setLeft(this.rotateLeft(root.getLeft()));
                 // Then Rotate RIGHT current Root
                 root = this.rotateRight(root);
             }
+
         } else if (balance < -1) { // Case Right
-            // If key is bigger than Root's left Child's key
-            if (key.compareTo(root.getRight().getKey()) == 1) {
+            // If key is bigger than Root's right Child's key
+            if (c.compare(key, root.getRight().getKey()) > 0) {
                 // Into case RIGHT-RIGHT, Rotate Left current Root.
-                root = this.rotateRight(root);
+                root = this.rotateLeft(root);
+
             } else {
                 // Case RIGHT-LEFT, Rotate Right Root's right child
                 root.setRight(this.rotateRight(root.getRight()));
@@ -202,7 +195,7 @@ public class AVL<T extends Comparable<T>> {
      * @param root
      * @return
      */
-    public int getBalance(Node<T> root) {
+    public int getBalance(Node root) {
         return getHeight(root.getLeft()) - getHeight(root.getRight());
     }
 
@@ -211,8 +204,8 @@ public class AVL<T extends Comparable<T>> {
      *
      * @param key
      */
-    public void insertRecursion(T key) {
-        this.root = insertNodeRecursion(this.root, key);
+    public void insertRecursion(Object key, Comparator<Object> c) {
+        this.root = insertNodeRecursion(this.root, key, c);
     }
 
     /**
@@ -224,16 +217,15 @@ public class AVL<T extends Comparable<T>> {
      * can be displayed all in order. This method using Loop
      */
     public void BFS() {
-        // Innitiate queue instance 
-        ArrayQueue<Node> nodeQueue = new ArrayQueue<>(10000);
-        // Add root to queue 
+        ArrayQueue nodeQueue = new ArrayQueue(10000);
         nodeQueue.enQueue(this.root);
+
         // Start loop while queue is not epmty 
         while (!nodeQueue.isEmpty()) {
-            // Initiate Node Current and set it as the head of the queue
-            Node current = nodeQueue.deQueue();
+            Node current = (Node) nodeQueue.deQueue();
             // Display current's key
-            System.out.print(current.getKey() + " ");
+            System.out.println(current.getKey().toString());
+
             // Check if Current is having Left-child node
             if (current.getLeft() != null) {
                 // Add left-child node to queue
@@ -256,16 +248,14 @@ public class AVL<T extends Comparable<T>> {
      * and ready to be popped out first.
      */
     public void DFSPreLoop() {
-        // Initiate Stack
-        ArrayStack<Node> stack = new ArrayStack<>(100000);
-        // Push root in Stack as the first Element
+        ArrayStack stack = new ArrayStack(100000);
         stack.push(this.root);
+
         // Begin loop while stack is not empty
         while (!stack.isEmpty()) {
-            // Initiate Node current, pop out the Top element of stack
-            Node current = stack.pop();
-            // Display key
-            System.out.print(current.getKey() + " ");
+            Node current = (Node) stack.pop();
+            System.out.println(current.getKey().toString());
+
             // If Node have Right child
             if (current.getRight() != null) {
                 // Push it into stack
@@ -291,8 +281,7 @@ public class AVL<T extends Comparable<T>> {
     public void DFSPreRecursion(Node root) {
         // If root is not null
         if (root != null) {
-            // Display root's key
-            System.out.print(root.getKey() + " ");
+            System.out.println(root.getKey().toString());
             // Recursion with root's left child
             this.DFSPreRecursion(root.getLeft());
             // Recursion with root's right child
@@ -467,7 +456,7 @@ public class AVL<T extends Comparable<T>> {
      * @param target
      * @return
      */
-    public Node findSuccessor(Node target) {
+    public Node findSuccessor(Node target, Comparator<Object> c) {
         // If target Node is null
         if (target == null) {
             // Return null
@@ -484,21 +473,20 @@ public class AVL<T extends Comparable<T>> {
         }
 
         // Initiate Node successor
-        Node<T> successor = null;
+        Node successor = null;
         // Initiate Node current = tree's root
-        Node<T> current = this.root;
+        Node current = this.root;
         // Start loop 
         while (true) {
             // If target's key is smaller than current's key
-            if (target.getKey().compareTo(current.getKey()) == -1) {
-                // Set successor = current
+            if (c.compare(target.getKey(), current.getKey()) < 0) {
                 successor = current;
-                // Set current = it's left child
                 current = current.getLeft();
+
                 // If target's key is bigger than current's key
-            } else if (target.getKey().compareTo(current.getKey()) == 1) {
-                // Set current = it's right child
+            } else if (c.compare(target.getKey(), current.getKey()) > 0) {
                 current = current.getRight();
+
                 // If target's key equal current's key
             } else {
                 // Break loop
@@ -515,27 +503,26 @@ public class AVL<T extends Comparable<T>> {
      * @param key
      * @return
      */
-    public Node findSuccessorByKey(T key) {
+    public Node findSuccessorByKey(Object key, Comparator<Object> c) {
         // Initiate Node current as the tree's root
-        Node<T> current = this.root;
+        Node current = this.root;
         // Start loop while current != null
         while (current != null) {
             // If current's key equal input
-            if (current.getKey().compareTo(key) == 0) {
-                // Break loop
+            if (c.compare(key, current.getKey()) == 0) {
                 break;
+
                 // If current's key is bigger
-            } else if (current.getKey().compareTo(key) == 1) {
-                // Set current = current's left child
+            } else if (c.compare(key, current.getKey()) < 0) {
                 current = current.getLeft();
+
                 // If current's ley is smaller
             } else {
-                // Set current = current's right child
                 current = current.getRight();
             }
         }
         // Return the successor
-        return this.findSuccessor(current);
+        return this.findSuccessor(current, c);
     }
 
     /**
@@ -549,20 +536,20 @@ public class AVL<T extends Comparable<T>> {
      *
      * @param root
      */
-    public Node<T> removeRecursive(Node<T> root, T key) {
+    public Node removeRecursive(Node root, Object key, Comparator<Object> c) {
         // If root is null
         if (root == null) {
             // Return null
             return null;
         }
         // If key is larger than root's key
-        if (key.compareTo(root.getKey()) == 1) {
-            // Return Node for not lost data in case have found Node
-            return this.removeRecursive(root.getRight(), key);
+        if (c.compare(key, root.getKey()) > 0) {
+            return this.removeRecursive(root.getRight(), key, c);
+
             // If key is smaller than root's key
-        } else if (key.compareTo(root.getKey()) == -1 ) {
-            // Return Node for not lost data in case have found Node
-            return this.removeRecursive(root.getLeft(), key);
+        } else if (c.compare(key, root.getKey()) < 0) {
+            return this.removeRecursive(root.getLeft(), key, c);
+
             // If key = root's key
         } else {
             // If root is a leaf
@@ -572,7 +559,7 @@ public class AVL<T extends Comparable<T>> {
                 // If root have 2 children
             } else if (root.getLeft() != null && root.getRight() != null) {
                 // Initiate Node max as the successor of root in right sub-tree
-                Node<T> min = this.findSuccessor(root);
+                Node min = this.findSuccessor(root, c);
                 // Set root's key = Node max's key
                 root.setKey(min.getKey());
                 /*
@@ -581,7 +568,7 @@ public class AVL<T extends Comparable<T>> {
                 Set root a new Right sub-tree after finishing remove the 
                 Successor.
                  */
-                root.setRight(this.removeRecursive(root.getRight(), min.getKey()));
+                root.setRight(this.removeRecursive(root.getRight(), min.getKey(), c));
 
                 // If root have 1 child
             } else {
@@ -612,8 +599,8 @@ public class AVL<T extends Comparable<T>> {
      * @param key
      * @return
      */
-    public Node removeNode(T key) {
-        return this.removeRecursive(this.root, key);
+    public Node removeNode(Object key, Comparator<Object> c) {
+        return this.removeRecursive(this.root, key, c);
     }
 
 }
