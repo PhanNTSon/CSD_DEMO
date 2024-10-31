@@ -510,7 +510,7 @@ public class Graph {
         }
         List<String> eulerPath = new ArrayList<>();
         // Using DFS, therefore using Stack
-        Stack.LinkedStack<Vertex> stack = new Stack.LinkedStack<>();
+        Stack.LinkedStack stack = new Stack.LinkedStack();
         
         Vertex sV = newG.getVertex(startV);
         // Push in sV to stack
@@ -518,7 +518,7 @@ public class Graph {
         
         // Begin loop
          while (!stack.isEmpty()){
-             Vertex current = stack.pop();
+             Vertex current = (Vertex) stack.pop();
              eulerPath.add(current.getLabel());
              current.getAdjList().entrySet()
                      .forEach(entry->{

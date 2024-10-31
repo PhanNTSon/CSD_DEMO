@@ -8,10 +8,10 @@ package DoubleLinkedList;
  *
  * @author ADMIN
  */
-public class DoubleLinkedList<T> {
+public class DoubleLinkedList {
 
-    private Node<T> header;
-    private Node<T> trailer;
+    private Node header;
+    private Node trailer;
     private int size;
 
     public DoubleLinkedList() {
@@ -20,19 +20,19 @@ public class DoubleLinkedList<T> {
         this.size = 0;
     }
 
-    public Node<T> getHeader() {
+    public Node getHeader() {
         return header;
     }
 
-    public void setHeader(Node<T> header) {
+    public void setHeader(Node header) {
         this.header = header;
     }
 
-    public Node<T> getTrailer() {
+    public Node getTrailer() {
         return trailer;
     }
 
-    public void setTrailer(Node<T> trailer) {
+    public void setTrailer(Node trailer) {
         this.trailer = trailer;
     }
 
@@ -44,7 +44,7 @@ public class DoubleLinkedList<T> {
         return this.size == 0;
     }
 
-    public boolean contains(T data) {
+    public boolean contains(Object data) {
         Node current = this.header;
         while (current != null) {
             current = current.getNext();
@@ -67,8 +67,6 @@ public class DoubleLinkedList<T> {
             return;
         }
 
-        System.out.println(mess);
-        System.out.print("List: ");
         Node current = this.header;
         while (current != null) {
             System.out.print(current.getData() + ", ");
@@ -77,7 +75,7 @@ public class DoubleLinkedList<T> {
         System.out.println();
     }
 
-    public void addFirst(T data) {
+    public void addFirst(Object data) {
         Node newNode = new Node(data);
         if (this.isEmpty()) {
             this.header = newNode;
@@ -90,7 +88,7 @@ public class DoubleLinkedList<T> {
         this.size++;
     }
 
-    public void addLast(T data) {
+    public void addLast(Object data) {
         Node newNode = new Node(data);
         if (this.isEmpty()) {
             this.header = newNode;
@@ -103,7 +101,7 @@ public class DoubleLinkedList<T> {
         this.size++;
     }
 
-    public void add(T data, int index) throws Exception {
+    public void add(Object data, int index) throws Exception {
         if (index < 0 || index > this.size - 1) {
             throw new Exception("INVALID INDEX");
         } else if (this.isEmpty() || index == 0) {
@@ -111,9 +109,9 @@ public class DoubleLinkedList<T> {
         } else if (index == this.size) {
             this.addLast(data);
         } else {
-            Node<T> newNode = new Node(data);
+            Node newNode = new Node(data);
             int count = 0;
-            Node<T> current = this.header;
+            Node current = this.header;
 
             while (count != index) {
                 current = current.getNext();
@@ -128,16 +126,16 @@ public class DoubleLinkedList<T> {
         }
     }
 
-    public T removeFirst() {
+    public Object removeFirst() {
         if (this.isEmpty()) {
             System.out.println("LIST EMPTY");
             return null;
         } else if (this.header == this.trailer) {
-            T data = this.header.getData();
+            Object data = this.header.getData();
             this.clear();
             return data;
         } else {
-            T data = this.header.getData();
+            Object data = this.header.getData();
             this.header = this.header.getNext();
             this.header.setPrevious(null);
             this.size--;
@@ -146,16 +144,16 @@ public class DoubleLinkedList<T> {
 
     }
 
-    public T removeLast() {
+    public Object removeLast() {
         if (this.isEmpty()) {
             System.out.println("LIST EMPTY");
             return null;
         } else if (this.header == this.trailer) {
-            T data = this.header.getData();
+            Object data = this.header.getData();
             this.clear();
             return data;
         } else {
-            T data = this.trailer.getData();
+            Object data = this.trailer.getData();
             this.trailer = this.trailer.getPrevious();
             this.trailer.setNext(null);
             this.size--;
@@ -163,7 +161,7 @@ public class DoubleLinkedList<T> {
         }
     }
 
-    public T remove(int index) {
+    public Object remove(int index) {
         if (this.isEmpty()) {
             System.out.println("LIST EMPTY");
             return null;
@@ -175,7 +173,7 @@ public class DoubleLinkedList<T> {
         } else if (index == this.size - 1) {
             return this.removeLast();
         } else {
-            Node<T> current = this.header;
+            Node current = this.header;
             int count = 0;
 
             while (count != index) {
@@ -183,7 +181,7 @@ public class DoubleLinkedList<T> {
                 count++;
             }
 
-            T data = current.getData();
+            Object data = current.getData();
             current.getPrevious().setNext(current.getNext());
             current.getNext().setPrevious(current.getPrevious());
             this.size--;
@@ -198,9 +196,9 @@ public class DoubleLinkedList<T> {
         }
 
         int count = 0;
-        Node<T> current = this.header;
-        Node<T> node1 = null;
-        Node<T> node2 = null;
+        Node current = this.header;
+        Node node1 = null;
+        Node node2 = null;
         while (current != null) {
             if (count == index1) {
                 node1 = current;
@@ -214,7 +212,7 @@ public class DoubleLinkedList<T> {
             count++;
         }
 
-        T tempData = node1.getData();
+        Object tempData = node1.getData();
         node1.setData(node2.getData());
         node2.setData(tempData);
     }

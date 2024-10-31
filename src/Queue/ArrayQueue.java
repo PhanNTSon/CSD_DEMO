@@ -8,9 +8,9 @@ package Queue;
  *
  * @author ADMIN
  */
-public class ArrayQueue<T> {
+public class ArrayQueue {
 
-    private T[] storage;
+    private Object[] storage;
     private int size, cap;
     private int front, back;
 
@@ -19,14 +19,14 @@ public class ArrayQueue<T> {
         this.size = 0;
         this.front = -1;
         this.back = -1;
-        this.storage = (T[]) new Object[cap];
+        this.storage = (Object[]) new Object[cap];
     }
 
-    public T[] getStorage() {
+    public Object[] getStorage() {
         return storage;
     }
 
-    public void setStorage(T[] storage) {
+    public void setStorage(Object[] storage) {
         this.storage = storage;
     }
 
@@ -58,7 +58,7 @@ public class ArrayQueue<T> {
         return this.size == this.cap;
     }
 
-    public T get(int index){
+    public Object get(int index){
         if (index > this.size || index < 0){
             return null;
         }
@@ -73,13 +73,13 @@ public class ArrayQueue<T> {
     }
 
     public void clear() {
-        this.storage = (T[]) new Object[this.cap];
+        this.storage = new Object[this.cap];
         this.size = 0;
         this.front = -1;
         this.back = -1;
     }
 
-    public void enQueue(T data) {
+    public void enQueue(Object data) {
         if (this.isFull()) {
             throw new ArrayStoreException("QUEUE FULL");
         } else if (this.isEmpty()) {
@@ -90,15 +90,15 @@ public class ArrayQueue<T> {
         this.size++;
     }
 
-    public T deQueue() {
+    public Object deQueue() {
         if (this.isEmpty()) {
             throw new ArrayStoreException("QUEUE EMPTY");
         } else if (this.size == 1){
-            T returnData = this.storage[this.front];
+            Object returnData = this.storage[this.front];
             this.clear();
             return returnData;
         }
-        T returnData = this.storage[this.front];
+        Object returnData = this.storage[this.front];
         this.storage[this.front] = null;
         this.front = (this.front + 1) % this.cap;
         this.size--;

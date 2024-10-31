@@ -13,7 +13,7 @@ import java.util.Random;
 public class Main {
     public static void main(String[] args) {
         Random rand = new Random();
-        LinkedStack<Integer> lStack = new LinkedStack<>();
+        LinkedStack lStack = new LinkedStack();
         
         lStack.push(15);
         lStack.push(11);

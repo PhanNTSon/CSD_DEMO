@@ -4,17 +4,19 @@
  */
 package Queue;
 
+import java.util.Comparator;
+
 /**
- * Priority Queue. This ADT after add a new Element, it will base on it's 
+ * Priority Queue. This ADT after add a new Element, it will base on it's
  * priority to push it forward to the top.
  *
  * @author ADMIN
  * @param <T>
  */
-public class LinkedPQueue<T extends Comparable<T>> {
+public class LinkedPQueue {
 
-    private Node<T> front;
-    private Node<T> back;
+    private Node front;
+    private Node back;
     private int size, cap;
 
     public LinkedPQueue(int cap) {
@@ -24,19 +26,19 @@ public class LinkedPQueue<T extends Comparable<T>> {
         this.size = 0;
     }
 
-    public Node<T> getFront() {
+    public Node getFront() {
         return front;
     }
 
-    public void setFront(Node<T> front) {
+    public void setFront(Node front) {
         this.front = front;
     }
 
-    public Node<T> getBack() {
+    public Node getBack() {
         return back;
     }
 
-    public void setBack(Node<T> back) {
+    public void setBack(Node back) {
         this.back = back;
     }
 
@@ -71,7 +73,7 @@ public class LinkedPQueue<T extends Comparable<T>> {
     }
 
     public void display() {
-        Node<T> current = this.front;
+        Node current = this.front;
         while (current != null) {
             System.out.print(current.getData().toString() + ", ");
             current = current.getNext();
@@ -82,52 +84,49 @@ public class LinkedPQueue<T extends Comparable<T>> {
     /**
      * First, add new Element to Queue, then compare it with each Elements in
      * Queue to locate it's correct location in the Queue.
-     * 
-     * @param data 
+     *
+     * @param data
+     * @param c
      */
-    public void enQueue(T data) {
+    public void enQueue(Object data, Comparator<Object> c) {
         if (this.isFull()) {
             throw new IndexOutOfBoundsException();
         }
         // Initiate New Node
-        Node<T> newNode = new Node(data);
+        Node newNode = new Node(data);
         // Case Queue is empty
         if (this.isEmpty()) {
-            // New node is both front and back of Queue
             this.front = newNode;
             this.back = newNode;
-        // Case Queue is not empty
-        } else {
-            // Add New node to last
+        } else {                // Case Queue is not empty
+
             this.back.setNext(newNode);
             newNode.setPrevious(this.back);
             this.back = newNode;
-            Node<T> current = this.back;
-            /*
-            Trace back from the back to the top of Queue to locate location by 
-            compare with each elements base on Priority.
-            Because the New node is in the Back, therefore after finding 
-            location successfully, only swap the Data but not the connection
-            between Nodes.
-            */
-            while (current != this.front && data.compareTo(current.getPrevious().getData()) > 0) {
+
+            Node current = this.back;
+            // Loop until found the correct position by going backward
+            while (current != this.front && c.compare(current, current.getPrevious()) > 0) {
                 current.setData(current.getPrevious().getData());
                 current = current.getPrevious();
             }
+
             current.setData(data);
         }
         this.size++;
     }
 
-    public T deQueue() {
+    public Object deQueue() {
+        // If queue is emtpy
         if (this.isEmpty()) {
             throw new ArrayStoreException();
         }
-        T returnData = this.front.getData();
+        Object returnData = this.front.getData();
+        // If list have only 1 element then set back and front to null
         if (this.size == 1) {
             this.back = null;
             this.front = null;
-        } else {
+        } else {    // Else set the front as it's next Node
             this.front = this.front.getNext();
             this.front.setPrevious(null);
         }

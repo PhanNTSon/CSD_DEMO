@@ -14,51 +14,41 @@ package Queue;
  * @author ADMIN
  * @param <T>
  */
-public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
+public class Node  {
 
-    private T data;
-    private Node<T> next;
-    private Node<T> previous;
+    private Object data;
+    private Node next;
+    private Node previous;
 
-    public Node(T data) {
+    public Node(Object data) {
         this.data = data;
         this.next = null;
         this.previous = null;
     }
 
-    public T getData() {
+    public Object getData() {
         return data;
     }
 
-    public Node<T> getNext() {
+    public Node getNext() {
         return next;
     }
 
-    public void setData(T data) {
+    public void setData(Object data) {
         this.data = data;
     }
 
-    public void setNext(Node<T> next) {
+    public void setNext(Node next) {
         this.next = next;
     }
 
-    public Node<T> getPrevious() {
+    public Node getPrevious() {
         return previous;
     }
 
-    public void setPrevious(Node<T> previous) {
+    public void setPrevious(Node previous) {
         this.previous = previous;
     }
 
-    /**
-     * Using compareTo() of T to return.
-     *
-     * @param o
-     * @return
-     */
-    @Override
-    public int compareTo(Node<T> o) {
-        return this.data.compareTo(o.getData());
-    }
-
+    
 }

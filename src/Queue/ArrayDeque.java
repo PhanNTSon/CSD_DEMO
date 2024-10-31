@@ -9,8 +9,8 @@ package Queue;
  * @author ADMIN
  * @param <T>
  */
-public class ArrayDeque<T extends Comparable<T>> {
-    private T[] storage;
+public class ArrayDeque {
+    private Object[] storage;
     private int size, cap;
     private int front, back;
 
@@ -19,14 +19,14 @@ public class ArrayDeque<T extends Comparable<T>> {
         this.size = 0;
         this.front = -1;
         this.back = -1;
-        this.storage = (T[]) new Object[cap];
+        this.storage = new Object[cap];
     }
 
-    public T[] getStorage() {
+    public Object[] getStorage() {
         return storage;
     }
 
-    public void setStorage(T[] storage) {
+    public void setStorage(Object[] storage) {
         this.storage = storage;
     }
 
@@ -66,13 +66,13 @@ public class ArrayDeque<T extends Comparable<T>> {
     }
 
     public void clear() {
-        this.storage = (T[]) new Object[this.cap];
+        this.storage = new Object[this.cap];
         this.size = 0;
         this.front = -1;
         this.back = -1;
     }
 
-    public void enQueueFront(T data) {
+    public void enQueueFront(Object data) {
         if (this.isFull()) {
             throw new ArrayStoreException("QUEUE FULL");
         } else if (this.isEmpty()) {
@@ -83,25 +83,31 @@ public class ArrayDeque<T extends Comparable<T>> {
         this.size++;
     }
 
-    public T deQueueFront() {
+    public Object deQueueFront() {
+        // If queue is empty
         if (this.isEmpty()) {
             throw new ArrayStoreException("QUEUE EMPTY");
-        } else if (this.size == 1){
-            T returnData = this.storage[this.front];
+            
+        } else if (this.size == 1){ // If queue have only 1 element
+            
+            Object returnData = this.storage[this.front];
             this.clear();
             return returnData;
         }
-        T returnData = this.storage[this.front];
+        
+        Object returnData = this.storage[this.front];
         this.storage[this.front] = null;
         this.front = (this.front + 1) % this.cap;
         this.size--;
         return returnData;
     }
     
-    public void enQueueBack(T data) {
+    public void enQueueBack(Object data) {
+        // If queue is full
         if (this.isFull()) {
             throw new ArrayStoreException("QUEUE FULL");
-        } else if (this.isEmpty()) {
+            
+        } else if (this.isEmpty()) {    // If queue is empty
             this.front++;
         }
         this.back = (this.back + 1) % this.cap;
@@ -109,15 +115,15 @@ public class ArrayDeque<T extends Comparable<T>> {
         this.size++;
     }
     
-    public T deQueueBack() {
+    public Object deQueueBack() {
         if (this.isEmpty()) {
             throw new ArrayStoreException("QUEUE EMPTY");
         } else if (this.size == 1){
-            T returnData = this.storage[this.back];
+            Object returnData = this.storage[this.back];
             this.clear();
             return returnData;
         }
-        T returnData = this.storage[this.back];
+        Object returnData = this.storage[this.back];
         this.storage[this.back] = null;
         this.back = (this.cap + (this.back - 1)) % this.cap;
         this.size--;

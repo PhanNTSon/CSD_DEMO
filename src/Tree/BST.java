@@ -4,14 +4,16 @@
  */
 package Tree;
 
+import java.util.Comparator;
+
 /**
  *
  * @author ADMIN
  * @param <T>
  */
-public class BST<T extends Comparable<T>> {
+public class BST {
 
-    private Node<T> root;
+    private Node root;
     private int size;
 
     public BST() {
@@ -30,15 +32,15 @@ public class BST<T extends Comparable<T>> {
      */
     public void insertNode(T key) {
         // Initiate new Node
-        Node<T> newNode = new Node(key);
+        Node newNode = new Node(key);
         // Check if Tree is empty
         if (this.isEmpty()) {
             this.root = newNode;
         } else {                // Else Tree is not empty
             // Initiate Node current pointed to the current Node
-            Node<T> current = this.root;
+            Node current = this.root;
             // Initate Node parent pointed to Current's previous Parent Node
-            Node<T> parent = null;
+            Node parent = null;
             /*
             Start loop to get the location where to put new Node in base on the
             position of Node Current.
@@ -94,7 +96,7 @@ public class BST<T extends Comparable<T>> {
      * @param key
      * @return
      */
-    public Node<T> insertNodeRecursion(Node<T> root, T key) {
+    public Node insertNodeRecursion(Node root, Object key) {
         // Check if root is null
         if (root == null) {
             // Increase size
@@ -127,7 +129,7 @@ public class BST<T extends Comparable<T>> {
      *
      * @param key
      */
-    public void insertRecursion(T key) {
+    public void insertRecursion(Object key) {
         this.root = insertNodeRecursion(this.root, key);
     }
 
@@ -383,7 +385,7 @@ public class BST<T extends Comparable<T>> {
      * @param target
      * @return
      */
-    public Node findSuccessor(Node target) {
+    public Node findSuccessor(Node target, Comparator<Object> c) {
         // If target Node is null
         if (target == null) {
             // Return null
@@ -406,18 +408,16 @@ public class BST<T extends Comparable<T>> {
         // Start loop 
         while (true) {
             // If target's key is smaller than current's key
-            if (target.getKey().compareTo(current.getKey()) == -1) {
-                // Set successor = current
+            if (c.compare(target.getKey(), current.getKey()) < 0) {
                 successor = current;
-                // Set current = it's left child
                 current = current.getLeft();
-                // If target's key is bigger than current's key
-            } else if (target.getKey().compareTo(current.getKey()) == 1) {
-                // Set current = it's right child
+
+                // If target's key is bigger than current's key                
+            } else if (c.compare(target.getKey(), current.getKey()) > 0) {
                 current = current.getRight();
+
                 // If target's key equal current's key
             } else {
-                // Break loop
                 break;
             }
         }
@@ -431,17 +431,17 @@ public class BST<T extends Comparable<T>> {
      * @param key
      * @return
      */
-    public Node findSuccessorByKey(T key) {
-        // Initiate Node current as the tree's root
-        Node<T> current = this.root;
-        // Start loop while current != null
+    public Node findSuccessorByKey(Object key, Comparator<Object> c) {
+        Node current = this.root;
+
+        // Start loop until found Node
         while (current != null) {
             // If current's key equal input
-            if (current.getKey().compareTo(key) == 0) {
+            if (c.compare(key, current.getKey()) == 0) {
                 // Break loop
                 break;
                 // If current's key is bigger
-            } else if (current.getKey().compareTo(key) == 1) {
+            } else if (c.compare(key, current.getKey()) > 0) {
                 // Set current = current's left child
                 current = current.getLeft();
                 // If current's ley is smaller
@@ -451,7 +451,7 @@ public class BST<T extends Comparable<T>> {
             }
         }
         // Return the successor
-        return this.findSuccessor(current);
+        return this.findSuccessor(current, c);
     }
 
     /**
@@ -467,7 +467,7 @@ public class BST<T extends Comparable<T>> {
      * @param key
      * @return
      */
-    public Node<T> removeRecursive(Node<T> root, T key) {
+    public Node removeRecursive(Node root, Object key) {
         // If root is null
         if (root == null) {
             // Return null
@@ -490,7 +490,7 @@ public class BST<T extends Comparable<T>> {
                 // If root have 2 children
             } else if (root.getLeft() != null && root.getRight() != null) {
                 // Initiate Node max as the successor of root in right sub-tree
-                Node<T> min = this.findSuccessor(root);
+                Node min = this.findSuccessor(root);
                 // Set root's key = Node max's key
                 root.setKey(min.getKey());
                 /*
@@ -530,7 +530,7 @@ public class BST<T extends Comparable<T>> {
      * @param key
      * @return
      */
-    public Node removeNode(T key) {
+    public Node removeNode(Object key) {
         return this.removeRecursive(this.root, key);
     }
 

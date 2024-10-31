@@ -5,19 +5,19 @@ package DoubleLinkedList;
  *
  * @author ADMIN
  */
-public class Node<T> {
+public class Node {
 
-    private T data;
+    private Object data;
     private Node next;
     private Node previous;
 
-    public Node(T data) {
+    public Node(Object data) {
         this.data = data;
         this.next = null;
         this.previous = null;
     }
 
-    public T getData() {
+    public Object getData() {
         return this.data;
     }
 
@@ -29,7 +29,7 @@ public class Node<T> {
         return this.previous;
     }
 
-    public void setData(T data) {
+    public void setData(Object data) {
         this.data = data;
     }
 

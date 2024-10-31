@@ -4,6 +4,9 @@
  */
 package Queue;
 
+import java.util.Comparator;
+import java.util.Random;
+
 /**
  *
  * @author ADMIN
@@ -11,16 +14,18 @@ package Queue;
 public class Main {
 
     public static void main(String[] args) {
-//        LinkedPQueue<Character> myQueue = new LinkedPQueue<>(10000000);
-//        for (char i = 'a'; i <= 'z'; i++) {
-//            myQueue.display();
-//            myQueue.enQueue(i);
-//        }
-//        myQueue.display();
-        ArrayPQueue<Integer> queue = new ArrayPQueue<>(Integer.class,10000);
+        ArrayPQueue qe = new ArrayPQueue(100);
+        Comparator c = new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                return Integer.compare((Integer) o2, (Integer) o1);
+            }
+        };
         for (int i = 0; i < 10; i++) {
-            queue.enQueue(i);
+            Random rand = new Random();
+            qe.enQueue(rand.nextInt(15), c);
         }
-        queue.display();
+        
+        qe.display();
     }
 }

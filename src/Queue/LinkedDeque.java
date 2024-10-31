@@ -11,9 +11,9 @@ package Queue;
  * @author ADMIN
  * @param <T>
  */
-public class LinkedDeque<T extends Comparable<T>> {
-    private Node<T> front;
-    private Node<T> back;
+public class LinkedDeque {
+    private Node front;
+    private Node back;
     private int size, cap;
 
     public LinkedDeque(int cap) {
@@ -23,19 +23,19 @@ public class LinkedDeque<T extends Comparable<T>> {
         this.size = 0;
     }
 
-    public Node<T> getFront() {
+    public Node getFront() {
         return front;
     }
 
-    public void setFront(Node<T> front) {
+    public void setFront(Node front) {
         this.front = front;
     }
 
-    public Node<T> getBack() {
+    public Node getBack() {
         return back;
     }
 
-    public void setBack(Node<T> back) {
+    public void setBack(Node back) {
         this.back = back;
     }
 
@@ -80,11 +80,11 @@ public class LinkedDeque<T extends Comparable<T>> {
         System.out.println();
     }
 
-    public void enQueueFront(T data) {
+    public void enQueueFront(Object data) {
         if (this.isFull()){
             throw new IndexOutOfBoundsException();
         }
-        Node<T> newNode = new Node(data);
+        Node newNode = new Node(data);
         if (this.isEmpty()) {
             this.front = newNode;
             this.back = newNode;
@@ -96,11 +96,11 @@ public class LinkedDeque<T extends Comparable<T>> {
         this.size++;
     }
 
-    public T deQueueFront() {
+    public Object deQueueFront() {
         if (this.isEmpty()) {
             throw new ArrayStoreException();
         }
-        T returnData = this.front.getData();
+        Object returnData = this.front.getData();
         if (this.size == 1) {
             this.back = null;
             this.front = null;
@@ -112,11 +112,11 @@ public class LinkedDeque<T extends Comparable<T>> {
         return returnData;
     }
     
-    public void enQueueBack(T data) {
+    public void enQueueBack(Object data) {
         if (this.isFull()){
             throw new IndexOutOfBoundsException();
         }
-        Node<T> newNode = new Node(data);
+        Node newNode = new Node(data);
         if (this.isEmpty()) {
             this.front = newNode;
             this.back = newNode;
@@ -128,11 +128,11 @@ public class LinkedDeque<T extends Comparable<T>> {
         this.size++;
     }
 
-    public T deQueueBack() {
+    public Object deQueueBack() {
         if (this.isEmpty()) {
             throw new ArrayStoreException();
         }
-        T returnData = this.back.getData();
+        Object returnData = this.back.getData();
         if (this.size == 1) {
             this.back = null;
             this.front = null;

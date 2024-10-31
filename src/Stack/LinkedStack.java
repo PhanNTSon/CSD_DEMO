@@ -8,8 +8,8 @@ package Stack;
  *
  * @author ADMIN
  */
-public class LinkedStack<T> {
-    private Node<T> top;
+public class LinkedStack {
+    private Node top;
     private int size;
 
     public LinkedStack() {
@@ -32,32 +32,32 @@ public class LinkedStack<T> {
         }
     }
     
-    public void push(T data) {
-        Node<T> newNode = new Node<>(data);
+    public void push(Object data) {
+        Node newNode = new Node(data);
         newNode.setNext(this.top);
         this.top = newNode;
         this.size ++;
     }
     
-    public T pop(){
+    public Object pop(){
         if (this.isEmpty()) {
             throw new ArrayStoreException("STACK EMPTY");
         }
-        T data = this.top.getData();
+        Object data = this.top.getData();
         this.top = this.top.getNext();
         this.size--;
         return data;
     }
     
-    public T peek(){
+    public Object peek(){
         if (this.isEmpty()) {
             throw new ArrayStoreException("STACK EMPTY");
         }
-        T data = this.top.getData();
+        Object data = this.top.getData();
         return data;
     }
     
-    public int search(T data){
+    public int search(Object data){
         if (this.isEmpty()) {
             throw new ArrayStoreException("STACK EMPTY");
         }

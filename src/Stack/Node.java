@@ -8,11 +8,11 @@ package Stack;
  *
  * @author ADMIN
  */
-public class Node<T> {
-    private T data;
+public class Node {
+    private Object data;
     private Node next;
 
-    public Node(T data) {
+    public Node(Object data) {
         this.data = data;
         this.next = null;
     }
@@ -25,7 +25,7 @@ public class Node<T> {
         this.next = next;
     }
     
-    public T getData(){
+    public Object getData(){
         return this.data;
     }
 }
