@@ -32,34 +32,28 @@ public class BST {
      * @param key
      */
     public void insertNode(Object key, Comparator<Object> c) {
-        // Initiate new Node
         Node newNode = new Node(key);
         // Check if Tree is empty
         if (this.isEmpty()) {
             this.root = newNode;
         } else {                // Else Tree is not empty
-            // Initiate Node current pointed to the current Node
             Node current = this.root;
-            // Initate Node parent pointed to Current's previous Parent Node
             Node parent = null;
-            /*
-            Start loop to get the location where to put new Node in base on the
-            position of Node Current.
-             */
+
             while (current != null) {
                 parent = current;
                 // Case key already exist in Tree
-                if (current.getKey() == key) {
+                if (current.key == key) {
                     System.out.println("ALREADY EXIT!");
                     return;
 
                     // Case key is smaller than the Current's Key Node
-                } else if (c.compare(key, current.getKey()) < 0) {
-                    current = current.getLeft();
+                } else if (c.compare(key, current.key) < 0) {
+                    current = current.left;
 
                     // Case key is larger
                 } else {
-                    current = current.getRight();
+                    current = current.right;
                 }
             }
             /*
@@ -69,10 +63,10 @@ public class BST {
              */
 
             // If key is larger than Parent's key
-            if (c.compare(key, parent.getKey()) > 0) {
-                parent.setRight(newNode);
+            if (c.compare(key, parent.key) > 0) {
+                parent.right = newNode;
             } else { // If key is smaller than
-                parent.setLeft(newNode);
+                parent.left = newNode;
             }
         }
         // Increase size
@@ -101,21 +95,14 @@ public class BST {
             return new Node(key);
 
             // Else if key is larger than root's key
-        } else if (c.compare(key, root.getKey()) > 0) {
-            /*
-        Set root's right Node is insertNodeRecursion with parameters are root's
-        right Node as a new root and current key.
-             */
-            root.setRight(insertNodeRecursion(root.getRight(), key, c));
-            // Else if key is smaller than root's key
-        } else if (c.compare(key, root.getKey()) < 0) {
-            /*
-        Set root's left Node is insertNodeRecursion with paramenters are root's
-        left Node as a new root and current key
-             */
-            root.setLeft(insertNodeRecursion(root.getLeft(), key, c));
+        } else if (c.compare(key, root.key) > 0) {
+            root.right = insertNodeRecursion(root.right, key, c);
+            
+        } else if (c.compare(key, root.key) < 0) {  // Else if key is smaller than root's key
+            root.left = insertNodeRecursion(root.left, key, c);
+            
         }
-        
+
         // Return this current root
         return root;
     }
@@ -144,54 +131,23 @@ public class BST {
         // Start loop while queue is not epmty 
         while (!nodeQueue.isEmpty()) {
             Node current = (Node) nodeQueue.deQueue();
-            System.out.println(current.getKey().toString());
+            System.out.println(current.key.toString());
 
             // Check if Current is having Left-child node
-            if (current.getLeft() != null) {
+            if (current.left != null) {
                 // Add left-child node to queue
-                nodeQueue.enQueue(current.getLeft());
+                nodeQueue.enQueue(current.left);
             }
 
             // Check if Current is having right-child node
-            if (current.getRight() != null) {
+            if (current.right != null) {
                 // Add right-child node to queue
-                nodeQueue.enQueue(current.getRight());
+                nodeQueue.enQueue(current.right);
             }
         }
     }
 
-    /**
-     * Depth First Search Pre-order Using Loop. Using a Stack to store Node and
-     * loop, each loop pop out the top and display it. Because of using stack,
-     * therefore to make sure the tree traversal from Left to Right, we must
-     * push it from Right to Left. Thus, the top Node will always on the Left
-     * and ready to be popped out first.
-     */
-    public void DFSPreLoop() {
-        // Initiate Stack
-        ArrayStack stack = new ArrayStack(100000);
-        // Push root in Stack as the first Element
-        stack.push(this.root);
-        // Begin loop while stack is not empty
-        while (!stack.isEmpty()) {
-            // Initiate Node current, pop out the Top element of stack
-            Node current = (Node) stack.pop();
-            // Display key
-            System.out.println(current.getKey().toString());
-            // If Node have Right child
-            if (current.getRight() != null) {
-                // Push it into stack
-                stack.push(current.getRight());
-            }
-
-            // If Node have Left child
-            if (current.getLeft() != null) {
-                // Push it into stack
-                stack.push(current.getLeft());
-            }
-        }
-
-    }
+    
 
     /**
      * Depth First Search Pre-order Using Recursion. Each Node this method visit
@@ -200,15 +156,12 @@ public class BST {
      *
      * @param root
      */
-    public void DFSPreRecursion(Node root) {
+    public void DFSPreorder_Recursion(Node root) {
         // If root is not null
         if (root != null) {
-            // Display root's key
-            System.out.print(root.getKey() + " ");
-            // Recursion with root's left child
-            this.DFSPreRecursion(root.getLeft());
-            // Recursion with root's right child
-            this.DFSPreRecursion(root.getRight());
+            System.out.print(root.key + " ");
+            this.DFSPreorder_Recursion(root.left);
+            this.DFSPreorder_Recursion(root.right);
         }
 
     }
@@ -217,8 +170,8 @@ public class BST {
      * Depth First Search Pre-order Using Recursion. Call DFSPreRecursion
      * without parameter.
      */
-    public void DFSPreR() {
-        this.DFSPreRecursion(this.root);
+    public void DFSPreorder_Recursion() {
+        this.DFSPreorder_Recursion(this.root);
     }
 
     /**
@@ -228,22 +181,16 @@ public class BST {
      *
      * @param root
      */
-    public void DFSInRecursion(Node root) {
+    public void DFSInorder_Recursion(Node root) {
         // If root is not null
         if (root != null) {
-            this.DFSInRecursion(root.getLeft());
-            System.out.println(root.getKey().toString());
-            this.DFSInRecursion(root.getRight());
+            this.DFSInorder_Recursion(root.left);
+            System.out.println(root.key.toString());
+            this.DFSInorder_Recursion(root.right);
         }
     }
 
-    /**
-     * Depth First Search In-order Using Recursion. Call DFSInRecursion without
-     * any parameters.
-     */
-    public void DFSInR() {
-        this.DFSInRecursion(this.root);
-    }
+    
 
     /**
      * Depth First Search Post-order Using Recursion. Each Node this method
@@ -253,26 +200,17 @@ public class BST {
      *
      * @param root
      */
-    public void DFSPostRecursion(Node root) {
+    public void DFSPostorder_Recursion(Node root) {
         // If root is not null
         if (root != null) {
-            // Recursion Left child
-            this.DFSPostRecursion(root.getLeft());
-            // Recursion Right child
-            this.DFSPostRecursion(root.getRight());
-            // Display root's key
-            System.out.print(root.getKey() + " ");
+            this.DFSPostorder_Recursion(root.left);
+            this.DFSPostorder_Recursion(root.right);
+            System.out.print(root.key + " ");
         }
 
     }
 
-    /**
-     * Depth First Search Post-order Using Recursion. Call DFSInRecursion
-     * without any parameters.
-     */
-    public void DFSPostR() {
-        this.DFSPostRecursion(this.root);
-    }
+   
 
     /**
      * Find Min value Using Loop. Minimum value always sit on the left-side,
@@ -283,27 +221,15 @@ public class BST {
      * @return
      */
     public Node findMinLoop(Node root) {
-        // Initiate current Node
         Node current = root;
         // While current have a left child
-        while (current.getLeft() != null) {
-            // Set current = left child
-            current = current.getLeft();
+        while (current.left != null) {
+            current = current.left;
         }
-        // Return current
         return current;
     }
 
-    /**
-     * Find Min value Using Loop. This method call findMinLoop with input is the
-     * tree's root.
-     *
-     * @return
-     */
-    public Node findMinL() {
-        return this.findMinLoop(this.root);
-    }
-
+    
     /**
      * Find Min value Using Recursion. Same logic as above but using
      * recursion.Each current Node will act as a Root. If root have left child
@@ -314,24 +240,14 @@ public class BST {
      */
     public Node findMinRecursion(Node root) {
         // If root have left child
-        if (root.getLeft() != null) {
-            // Recursive it
-            return this.findMinRecursion(root.getLeft());
+        if (root.left != null) {
+            return this.findMinRecursion(root.left);
         } else {
-            // return root
             return root;
         }
     }
 
-    /**
-     * Find Min value Using Recursion.This method call the findMinRecursion with
-     * input is this tree's root
-     *
-     * @return
-     */
-    public Node findMinR() {
-        return this.findMinRecursion(this.root);
-    }
+    
 
     /**
      * Find Max value Using Recursion. Same logic as above but using
@@ -343,24 +259,14 @@ public class BST {
      */
     public Node findMaxRecursion(Node root) {
         // If root have left child
-        if (root.getRight() != null) {
-            // Recursive it
-            return this.findMaxRecursion(root.getRight());
+        if (root.right != null) {
+            return this.findMaxRecursion(root.right);
         } else {
-            // return root
             return root;
         }
     }
 
-    /**
-     * Find Max value Using Recursion.This method call the findMaxRecursion with
-     * input is this tree's root
-     *
-     * @return
-     */
-    public Node findMaxR() {
-        return this.findMinRecursion(this.root);
-    }
+    
 
     /**
      * Find Successor. If a Node have a right child, then it's successive will
@@ -379,33 +285,27 @@ public class BST {
     public Node findSuccessor(Node target, Comparator<Object> c) {
         // If target Node is null
         if (target == null) {
-            // Return null
             return null;
         }
 
         // If target have right child
-        if (target.getRight() != null) {
-            /*
-            Return the Min node of the right sub-tree, the target's right child 
-            act as the root of that sub-tree.
-             */
-            return this.findMinRecursion(target.getRight());
+        if (target.right != null) {
+
+            return this.findMinRecursion(target.right);
         }
 
-        // Initiate Node successor
         Node successor = null;
-        // Initiate Node current = tree's root
         Node current = this.root;
         // Start loop 
         while (true) {
             // If target's key is smaller than current's key
-            if (c.compare(target.getKey(), current.getKey()) < 0) {
+            if (c.compare(target.key, current.key) < 0) {
                 successor = current;
-                current = current.getLeft();
+                current = current.left;
 
                 // If target's key is bigger than current's key                
-            } else if (c.compare(target.getKey(), current.getKey()) > 0) {
-                current = current.getRight();
+            } else if (c.compare(target.key, current.key) > 0) {
+                current = current.right;
 
                 // If target's key equal current's key
             } else {
@@ -415,35 +315,7 @@ public class BST {
         return successor;
     }
 
-    /**
-     * Find Successor. This method will take input a key and then find its node
-     * in the tree.Then return the Successor of the Node.
-     *
-     * @param key
-     * @return
-     */
-    public Node findSuccessorByKey(Object key, Comparator<Object> c) {
-        Node current = this.root;
-
-        // Start loop until found Node
-        while (current != null) {
-            // If current's key equal input
-            if (c.compare(key, current.getKey()) == 0) {
-                // Break loop
-                break;
-                // If current's key is bigger
-            } else if (c.compare(key, current.getKey()) > 0) {
-                // Set current = current's left child
-                current = current.getLeft();
-                // If current's ley is smaller
-            } else {
-                // Set current = current's right child
-                current = current.getRight();
-            }
-        }
-        // Return the successor
-        return this.findSuccessor(current, c);
-    }
+    
 
     /**
      * Remove Node.There are 3 possible cases of removing a Node in tree.If Node
@@ -465,46 +337,34 @@ public class BST {
             return null;
         }
         // If key is larger than root's key
-        if (c.compare(key, root.getKey()) > 0) {
-            root.setRight(this.removeRecursive(root.getRight(), key, c));
+        if (c.compare(key, root.key) > 0) {
+            root.right = this.removeRecursive(root.right, key, c);
 
             // If key is smaller than root's key
-        } else if (c.compare(key, root.getKey()) < 0) {
-            root.setLeft(this.removeRecursive(root.getLeft(), key, c));
+        } else if (c.compare(key, root.key) < 0) {
+            root.left = this.removeRecursive(root.left, key, c);
             // If key = root's key
         } else {
             // If root is a leaf
-            if (root.getLeft() == null && root.getRight() == null) {
+            if (root.left == null && root.right == null) {
                 root = null;
 
                 // If root have 2 children
-            } else if (root.getLeft() != null && root.getRight() != null) {
+            } else if (root.left != null && root.right != null) {
 
                 Node min = this.findSuccessor(root, c);
-                root.setKey(min.getKey());
-                /*
-        Remove Node max by calling recursive the process with key is Node max's
-        key. New parameter root will be root's right child.
-                Set root a new Right sub-tree after finishing remove the 
-                Successor.
-                 */
-                root.setRight(this.removeRecursive(root.getRight(), min.getKey(), c));
+                root.key = min.key;
+                root.right = this.removeRecursive(root.right, min.key, c);
 
                 // If root have 1 child
             } else {
-                /*
-        Set root as root's child, by this the connection will not lost. The 
-        link will be like this, parent -> root -> child. 
-        Because we set root = root's child, therefor: parent -> child
-                 */
+
                 // If root have left child
-                if (root.getLeft() != null) {
-                    // Set root = root's left child
-                    root = root.getLeft();
+                if (root.left != null) {
+                    root = root.left;
                     // If root have right child
                 } else {
-                    // Set root = root's right child
-                    root = root.getRight();
+                    root = root.right;
                 }
             }
         }
@@ -523,7 +383,4 @@ public class BST {
         return this.removeRecursive(this.root, key, c);
     }
 
-    
 }
-
-

@@ -4,6 +4,8 @@
  */
 package DoubleLinkedList;
 
+import java.util.Comparator;
+
 /**
  *
  * @author ADMIN
@@ -12,12 +14,10 @@ public class DoubleLinkedList {
 
     private Node header;
     private Node trailer;
-    private int size;
 
     public DoubleLinkedList() {
         this.header = null;
         this.trailer = null;
-        this.size = 0;
     }
 
     public Node getHeader() {
@@ -36,19 +36,15 @@ public class DoubleLinkedList {
         this.trailer = trailer;
     }
 
-    public int getSize() {
-        return size;
-    }
-
     public boolean isEmpty() {
-        return this.size == 0;
+        return this.header == this.trailer;
     }
 
     public boolean contains(Object data) {
         Node current = this.header;
         while (current != null) {
-            current = current.getNext();
-            if (current.getData().equals(data)) {
+            current = current.next;
+            if (current.data.equals(data)) {
                 return true;
             }
         }
@@ -58,7 +54,6 @@ public class DoubleLinkedList {
     public void clear() {
         this.header = null;
         this.trailer = null;
-        this.size = 0;
     }
 
     public void display(String mess) {
@@ -69,8 +64,8 @@ public class DoubleLinkedList {
 
         Node current = this.header;
         while (current != null) {
-            System.out.print(current.getData() + ", ");
-            current = current.getNext();
+            System.out.print(current.data + ", ");
+            current = current.next;
         }
         System.out.println();
     }
@@ -81,11 +76,10 @@ public class DoubleLinkedList {
             this.header = newNode;
             this.trailer = newNode;
         } else {
-            newNode.setNext(this.header);
-            this.header.setPrevious(newNode);
+            newNode.next = this.header;
+            this.header.previous = newNode;
             this.header = newNode;
         }
-        this.size++;
     }
 
     public void addLast(Object data) {
@@ -94,51 +88,43 @@ public class DoubleLinkedList {
             this.header = newNode;
             this.trailer = newNode;
         } else {
-            newNode.setPrevious(this.trailer);
-            this.trailer.setNext(newNode);
+            newNode.previous = this.trailer;
+            this.trailer.next = newNode;
             this.trailer = newNode;
         }
-        this.size++;
     }
 
     public void add(Object data, int index) throws Exception {
-        if (index < 0 || index > this.size - 1) {
-            throw new Exception("INVALID INDEX");
-        } else if (this.isEmpty() || index == 0) {
+        if (this.isEmpty() || index == 0) {
             this.addFirst(data);
-        } else if (index == this.size) {
-            this.addLast(data);
         } else {
             Node newNode = new Node(data);
             int count = 0;
             Node current = this.header;
 
             while (count != index) {
-                current = current.getNext();
+                current = current.next;
                 count++;
             }
 
-            current.getPrevious().setNext(newNode);
-            newNode.setPrevious(current.getPrevious());
-            current.setPrevious(newNode);
-            newNode.setNext(current);
-            this.size++;
+            current.previous.next = newNode;
+            newNode.previous = current.previous;
+            current.previous = newNode;
+            newNode.next = current;
         }
     }
 
     public Object removeFirst() {
         if (this.isEmpty()) {
-            System.out.println("LIST EMPTY");
             return null;
         } else if (this.header == this.trailer) {
-            Object data = this.header.getData();
+            Object data = this.header.data;
             this.clear();
             return data;
         } else {
-            Object data = this.header.getData();
-            this.header = this.header.getNext();
-            this.header.setPrevious(null);
-            this.size--;
+            Object data = this.header.data;
+            this.header = this.header.next;
+            this.header.previous = null;
             return data;
         }
 
@@ -146,54 +132,41 @@ public class DoubleLinkedList {
 
     public Object removeLast() {
         if (this.isEmpty()) {
-            System.out.println("LIST EMPTY");
             return null;
         } else if (this.header == this.trailer) {
-            Object data = this.header.getData();
+            Object data = this.header.data;
             this.clear();
             return data;
         } else {
-            Object data = this.trailer.getData();
-            this.trailer = this.trailer.getPrevious();
-            this.trailer.setNext(null);
-            this.size--;
+            Object data = this.trailer.data;
+            this.trailer = this.trailer.previous;
+            this.trailer.next = null;
             return data;
         }
     }
 
     public Object remove(int index) {
         if (this.isEmpty()) {
-            System.out.println("LIST EMPTY");
-            return null;
-        } else if (index < 0 || index > this.size - 1) {
-            System.out.println("INVALID INDEX");
             return null;
         } else if (index == 0) {
             return this.removeFirst();
-        } else if (index == this.size - 1) {
-            return this.removeLast();
         } else {
             Node current = this.header;
             int count = 0;
 
             while (count != index) {
-                current = current.getNext();
+                current = current.next;
                 count++;
             }
 
-            Object data = current.getData();
-            current.getPrevious().setNext(current.getNext());
-            current.getNext().setPrevious(current.getPrevious());
-            this.size--;
+            Object data = current.data;
+            current.previous.next = current.next;
+            current.next.previous = current.previous;
             return data;
         }
     }
 
     public void swap(int index1, int index2) {
-        if (index1 < 0 || index1 > this.size - 1
-                || index2 < 0 || index2 > this.size - 1) {
-            throw new IndexOutOfBoundsException();
-        }
 
         int count = 0;
         Node current = this.header;
@@ -207,15 +180,30 @@ public class DoubleLinkedList {
             if (count == index2) {
                 node2 = current;
             }
-            current = current.getNext();
+            current = current.next;
 
             count++;
         }
 
-        Object tempData = node1.getData();
-        node1.setData(node2.getData());
-        node2.setData(tempData);
+        Object tempData = node1.data;
+        node1.data = node2.data;
+        node2.data = tempData;
     }
-    
-    
+
+    public void swap(Node a, Node b) {
+        Object temp = a.data;
+        a.data = b.data;
+        b.data = temp;
+    }
+
+    public void sort(Comparator<Object> c) {
+        for (Node i = this.header; i != this.trailer; i = i.next) {
+            for (Node j = this.header; j != this.trailer; j = j.next) {
+                if (c.compare(j.data, j.next.data) > 0) {
+                    this.swap(j, j.next);
+                }
+            }
+        }
+    }
+
 }

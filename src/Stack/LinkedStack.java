@@ -9,6 +9,7 @@ package Stack;
  * @author ADMIN
  */
 public class LinkedStack {
+
     private Node top;
     private int size;
 
@@ -16,59 +17,55 @@ public class LinkedStack {
         this.top = null;
         this.size = 0;
     }
-    
-    public boolean isEmpty(){
+
+    public boolean isEmpty() {
         return this.size == 0;
     }
-    
-    public void clear(){
+
+    public void clear() {
         this.top = null;
         this.size = 0;
     }
-    
-    public void display(){
-        for (Node i = this.top; i != null; i = i.getNext()) {
-            System.out.print(i.getData() + " ");
+
+    public void display() {
+        for (Node i = this.top; i != null; i = i.next) {
+            System.out.print(i.data + " ");
         }
     }
-    
+
     public void push(Object data) {
         Node newNode = new Node(data);
-        newNode.setNext(this.top);
+        newNode.next = this.top;
         this.top = newNode;
-        this.size ++;
+        this.size++;
     }
-    
-    public Object pop(){
-        if (this.isEmpty()) {
-            throw new ArrayStoreException("STACK EMPTY");
-        }
-        Object data = this.top.getData();
-        this.top = this.top.getNext();
+
+    public Object pop() {
+
+        Object data = this.top.data;
+        this.top = this.top.next;
         this.size--;
         return data;
     }
-    
-    public Object peek(){
-        if (this.isEmpty()) {
-            throw new ArrayStoreException("STACK EMPTY");
-        }
-        Object data = this.top.getData();
+
+    public Object peek() {
+
+        Object data = this.top.data;
         return data;
     }
-    
-    public int search(Object data){
+
+    public int search(Object data) {
         if (this.isEmpty()) {
-            throw new ArrayStoreException("STACK EMPTY");
+            return -1;
         }
-        
+
         int count = 0;
         Node current = this.top;
         while (current != null) {
-            if (current.getData() == data){
+            if (current.data == data) {
                 return count;
             }
-            current = current.getNext();
+            current = current.next;
             count++;
         }
         return -1;

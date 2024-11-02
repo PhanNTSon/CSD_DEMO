@@ -7,7 +7,6 @@ package Queue;
 /**
  *
  * @author ADMIN
- * @param <T>
  */
 public class LinkedQueues {
 
@@ -73,22 +72,20 @@ public class LinkedQueues {
     public void display() {
         Node current = this.front;
         while (current != null) {
-            System.out.print(current.getData() + ", ");
-            current = current.getNext();
+            System.out.print(current.data + ", ");
+            current = current.next;
         }
         System.out.println();
     }
 
     public void enQueue(Object data) {
-        if (this.isFull()){
-            throw new IndexOutOfBoundsException();
-        }
+        
         Node newNode = new Node(data);
         if (this.isEmpty()) {
             this.front = newNode;
             this.back = newNode;
         } else {
-            this.back.setNext(newNode);
+            this.back.next = newNode;
             this.back = newNode;
         }
         this.size++;
@@ -98,12 +95,12 @@ public class LinkedQueues {
         if (this.isEmpty()) {
             throw new ArrayStoreException();
         }
-        Object returnData = this.front.getData();
+        Object returnData = this.front.data;
         if (this.size == 1) {
             this.back = null;
             this.front = null;
         } else {
-            this.front = this.front.getNext();
+            this.front = this.front.next;
         }
         this.size--;
         return returnData;

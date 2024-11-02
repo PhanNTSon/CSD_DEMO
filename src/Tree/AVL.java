@@ -5,12 +5,11 @@
 package Tree;
 
 import java.util.Comparator;
-import java.util.Random;
+
 
 /**
  *
  * @author ADMIN
- * @param <T>
  */
 public class AVL {
 
@@ -26,58 +25,7 @@ public class AVL {
         return this.size == 0;
     }
 
-    /**
-     * Insert a Node by Loop.
-     *
-     * @param key
-     */
-    public void insertNode(Object key, Comparator<Object> c) {
-        Node newNode = new Node(key);
-        // Check if Tree is empty
-        if (this.isEmpty()) {
-            this.root = newNode;
-        } else {                // Else Tree is not empty
-            Node current = this.root;
-            Node parent = null;
-            /*
-            Start loop to get the location where to put new Node in base on the
-            position of Node Current.
-             */
-            while (current != null) {
-                parent = current;
-
-                // Case key already exist in Tree
-                if (c.compare(key, current.getKey()) == 0) {
-                    System.out.println("ALREADY EXIT!");
-                    return;
-
-                    // Case key is smaller than the Current's Key Node
-                } else if (c.compare(key, current.getKey()) < 0) {
-                    current = current.getLeft();
-
-                    // Case key is larger
-                } else {
-                    // Move current to the Right branch
-                    current = current.getRight();
-                }
-            }
-            /*
-            After loop, the Node Current's position is where to put in.
-            Through the Node Parent, we will determine which side need to be 
-            inserted to.
-             */
-
-            // If key is larger than Parent's key
-            if (c.compare(key, parent.getKey()) > 0) {
-                parent.setRight(newNode);
-
-            } else { // If key is smaller than
-                parent.setLeft(newNode);
-            }
-        }
-        // Increase size
-        this.size++;
-    }
+    
 
     /**
      * Insert a Node by Recursion. Each recursion time, the next root will act
@@ -101,12 +49,12 @@ public class AVL {
             return new Node(key);
 
             // Else if key is larger than root's key
-        } else if (c.compare(key, root.getKey()) > 0) {
-            root.setRight(insertNodeRecursion(root.getRight(), key, c));
+        } else if (c.compare(key, root.key) > 0) {
+            root.right = insertNodeRecursion(root.right, key, c);
 
             // Else if key is smaller than root's key
-        } else if (c.compare(key, root.getKey()) < 0) {
-            root.setLeft(insertNodeRecursion(root.getLeft(), key, c));
+        } else if (c.compare(key, root.key) < 0) {
+            root.left = insertNodeRecursion(root.left, key, c);
         }
         this.size++;
 
@@ -117,26 +65,26 @@ public class AVL {
          */
         if (balance > 1) {          // Case Left
             // If key is smaller than Root's left child' key
-            if (c.compare(key, root.getLeft().getKey()) < 0) {
+            if (c.compare(key, root.left.key) < 0) {
                 // Into case LEFT-LEFT, Rotate Right current Root.
                 root = this.rotateRight(root);
 
             } else {
                 // Case LEFT-RIGHT, Rotate LEFT Root's Left child
-                root.setLeft(this.rotateLeft(root.getLeft()));
+                root.left = this.rotateLeft(root.left);
                 // Then Rotate RIGHT current Root
                 root = this.rotateRight(root);
             }
 
         } else if (balance < -1) { // Case Right
             // If key is bigger than Root's right Child's key
-            if (c.compare(key, root.getRight().getKey()) > 0) {
+            if (c.compare(key, root.right.key) > 0) {
                 // Into case RIGHT-RIGHT, Rotate Left current Root.
                 root = this.rotateLeft(root);
 
             } else {
                 // Case RIGHT-LEFT, Rotate Right Root's right child
-                root.setRight(this.rotateRight(root.getRight()));
+                root.right = this.rotateRight(root.right);
                 // Then Rotate Left current Root
                 root = this.rotateLeft(root);
             }
@@ -154,9 +102,9 @@ public class AVL {
      * @return
      */
     public Node rotateRight(Node root) {
-        Node temp = root.getLeft();
-        root.setLeft(temp.getRight());
-        temp.setRight(root);
+        Node temp = root.left;
+        root.left = temp.right;
+        temp.right = root;
         return temp;
     }
 
@@ -168,9 +116,9 @@ public class AVL {
      * @return
      */
     public Node rotateLeft(Node root) {
-        Node temp = root.getRight();
-        root.setRight(temp.getLeft());
-        temp.setLeft(root);
+        Node temp = root.right;
+        root.right = temp.left;
+        temp.left = root;
         return temp;
     }
 
@@ -184,8 +132,8 @@ public class AVL {
         if (root == null) {
             return -1;
         } else {
-            return Math.max(getHeight(root.getLeft()),
-                    getHeight(root.getRight())) + 1;
+            return Math.max(getHeight(root.left),
+                    getHeight(root.right)) + 1;
         }
     }
 
@@ -196,7 +144,7 @@ public class AVL {
      * @return
      */
     public int getBalance(Node root) {
-        return getHeight(root.getLeft()) - getHeight(root.getRight());
+        return getHeight(root.left) - getHeight(root.right);
     }
 
     /**
@@ -223,53 +171,21 @@ public class AVL {
         // Start loop while queue is not epmty 
         while (!nodeQueue.isEmpty()) {
             Node current = (Node) nodeQueue.deQueue();
-            // Display current's key
-            System.out.println(current.getKey().toString());
+            System.out.println(current.key.toString());
 
             // Check if Current is having Left-child node
-            if (current.getLeft() != null) {
-                // Add left-child node to queue
-                nodeQueue.enQueue(current.getLeft());
+            if (current.left != null) {
+                nodeQueue.enQueue(current.left);
 
             }
             // Check if Current is having right-child node
-            if (current.getRight() != null) {
-                // Add right-child node to queue
-                nodeQueue.enQueue(current.getRight());
+            if (current.right != null) {
+                nodeQueue.enQueue(current.right);
             }
         }
     }
 
-    /**
-     * Depth First Search Pre-order Using Loop. Using a Stack to store Node and
-     * loop, each loop pop out the top and display it. Because of using stack,
-     * therefore to make sure the tree traversal from Left to Right, we must
-     * push it from Right to Left. Thus, the top Node will always on the Left
-     * and ready to be popped out first.
-     */
-    public void DFSPreLoop() {
-        ArrayStack stack = new ArrayStack(100000);
-        stack.push(this.root);
-
-        // Begin loop while stack is not empty
-        while (!stack.isEmpty()) {
-            Node current = (Node) stack.pop();
-            System.out.println(current.getKey().toString());
-
-            // If Node have Right child
-            if (current.getRight() != null) {
-                // Push it into stack
-                stack.push(current.getRight());
-            }
-
-            // If Node have Left child
-            if (current.getLeft() != null) {
-                // Push it into stack
-                stack.push(current.getLeft());
-            }
-        }
-
-    }
+    
 
     /**
      * Depth First Search Pre-order Using Recursion. Each Node this method visit
@@ -278,25 +194,17 @@ public class AVL {
      *
      * @param root
      */
-    public void DFSPreRecursion(Node root) {
+    public void DFSPreorder_Recursion(Node root) {
         // If root is not null
         if (root != null) {
-            System.out.println(root.getKey().toString());
-            // Recursion with root's left child
-            this.DFSPreRecursion(root.getLeft());
-            // Recursion with root's right child
-            this.DFSPreRecursion(root.getRight());
+            System.out.println(root.key.toString());
+            this.DFSPreorder_Recursion(root.left);
+            this.DFSPreorder_Recursion(root.right);
         }
 
     }
 
-    /**
-     * Depth First Search Pre-order Using Recursion. Call DFSPreRecursion
-     * without parameter.
-     */
-    public void DFSPreR() {
-        this.DFSPreRecursion(this.root);
-    }
+    
 
     /**
      * Depth First Search In-order Using Recursion. Each Node this method visit
@@ -305,26 +213,16 @@ public class AVL {
      *
      * @param root
      */
-    public void DFSInRecursion(Node root) {
+    public void DFSInorder_Recursion(Node root) {
         // If root is not null
         if (root != null) {
-            // Recursion next Left child
-            this.DFSInRecursion(root.getLeft());
-            // Display root's key
-            System.out.print(root.getKey() + " ");
-            // Recursion next Right child
-            this.DFSInRecursion(root.getRight());
+            this.DFSInorder_Recursion(root.left);
+            System.out.print(root.key + " ");
+            this.DFSInorder_Recursion(root.right);
         }
     }
 
-    /**
-     * Depth First Search In-order Using Recursion. Call DFSInRecursion without
-     * any parameters.
-     */
-    public void DFSInR() {
-        this.DFSInRecursion(this.root);
-    }
-
+    
     /**
      * Depth First Search Post-order Using Recursion. Each Node this method
      * visit will act as a Root. As long as the Root is not null, visit next
@@ -333,56 +231,19 @@ public class AVL {
      *
      * @param root
      */
-    public void DFSPostRecursion(Node root) {
+    public void DFSPostorder_Recursion(Node root) {
         // If root is not null
         if (root != null) {
-            // Recursion Left child
-            this.DFSPostRecursion(root.getLeft());
-            // Recursion Right child
-            this.DFSPostRecursion(root.getRight());
-            // Display root's key
-            System.out.print(root.getKey() + " ");
+            this.DFSPostorder_Recursion(root.left);
+            this.DFSPostorder_Recursion(root.right);
+            System.out.print(root.key + " ");
         }
 
     }
 
-    /**
-     * Depth First Search Post-order Using Recursion. Call DFSInRecursion
-     * without any parameters.
-     */
-    public void DFSPostR() {
-        this.DFSPostRecursion(this.root);
-    }
+    
 
-    /**
-     * Find Min value Using Loop. Minimum value always sit on the left-side,
-     * therefore if the Current Node have a Left child, visit it or else return
-     * the current Node.Current node act as a root.
-     *
-     * @param root
-     * @return
-     */
-    public Node findMinLoop(Node root) {
-        // Initiate current Node
-        Node current = root;
-        // While current have a left child
-        while (current.getLeft() != null) {
-            // Set current = left child
-            current = current.getLeft();
-        }
-        // Return current
-        return current;
-    }
-
-    /**
-     * Find Min value Using Loop. This method call findMinLoop with input is the
-     * tree's root.
-     *
-     * @return
-     */
-    public Node findMinL() {
-        return this.findMinLoop(this.root);
-    }
+    
 
     /**
      * Find Min value Using Recursion. Same logic as above but using
@@ -394,24 +255,15 @@ public class AVL {
      */
     public Node findMinRecursion(Node root) {
         // If root have left child
-        if (root.getLeft() != null) {
-            // Recursive it
-            return this.findMinRecursion(root.getLeft());
+        if (root.left != null) {
+            return this.findMinRecursion(root.left);
         } else {
             // return root
             return root;
         }
     }
 
-    /**
-     * Find Min value Using Recursion.This method call the findMinRecursion with
-     * input is this tree's root
-     *
-     * @return
-     */
-    public Node findMinR() {
-        return this.findMinRecursion(this.root);
-    }
+    
 
     /**
      * Find Max value Using Recursion. Same logic as above but using
@@ -423,24 +275,15 @@ public class AVL {
      */
     public Node findMaxRecursion(Node root) {
         // If root have left child
-        if (root.getRight() != null) {
-            // Recursive it
-            return this.findMaxRecursion(root.getRight());
+        if (root.right != null) {
+            return this.findMaxRecursion(root.right);
         } else {
             // return root
             return root;
         }
     }
 
-    /**
-     * Find Max value Using Recursion.This method call the findMaxRecursion with
-     * input is this tree's root
-     *
-     * @return
-     */
-    public Node findMaxR() {
-        return this.findMinRecursion(this.root);
-    }
+    
 
     /**
      * Find Successor. If a Node have a right child, then it's successive will
@@ -464,28 +307,24 @@ public class AVL {
         }
 
         // If target have right child
-        if (target.getRight() != null) {
-            /*
-            Return the Min node of the right sub-tree, the target's right child 
-            act as the root of that sub-tree.
-             */
-            return this.findMinRecursion(target.getRight());
+        if (target.right != null) {
+            
+            return this.findMinRecursion(target.right);
         }
 
-        // Initiate Node successor
         Node successor = null;
-        // Initiate Node current = tree's root
         Node current = this.root;
+        
         // Start loop 
         while (true) {
             // If target's key is smaller than current's key
-            if (c.compare(target.getKey(), current.getKey()) < 0) {
+            if (c.compare(target.key, current.key) < 0) {
                 successor = current;
-                current = current.getLeft();
+                current = current.left;
 
                 // If target's key is bigger than current's key
-            } else if (c.compare(target.getKey(), current.getKey()) > 0) {
-                current = current.getRight();
+            } else if (c.compare(target.key, current.key) > 0) {
+                current = current.right;
 
                 // If target's key equal current's key
             } else {
@@ -504,21 +343,21 @@ public class AVL {
      * @return
      */
     public Node findSuccessorByKey(Object key, Comparator<Object> c) {
-        // Initiate Node current as the tree's root
         Node current = this.root;
-        // Start loop while current != null
+        
+        // Begin loop until reach the end of tree
         while (current != null) {
             // If current's key equal input
-            if (c.compare(key, current.getKey()) == 0) {
+            if (c.compare(key, current.key) == 0) {
                 break;
 
                 // If current's key is bigger
-            } else if (c.compare(key, current.getKey()) < 0) {
-                current = current.getLeft();
+            } else if (c.compare(key, current.key) < 0) {
+                current = current.left;
 
                 // If current's ley is smaller
             } else {
-                current = current.getRight();
+                current = current.right;
             }
         }
         // Return the successor
@@ -539,52 +378,36 @@ public class AVL {
     public Node removeRecursive(Node root, Object key, Comparator<Object> c) {
         // If root is null
         if (root == null) {
-            // Return null
             return null;
         }
         // If key is larger than root's key
-        if (c.compare(key, root.getKey()) > 0) {
-            return this.removeRecursive(root.getRight(), key, c);
+        if (c.compare(key, root.key) > 0) {
+            return this.removeRecursive(root.right, key, c);
 
             // If key is smaller than root's key
-        } else if (c.compare(key, root.getKey()) < 0) {
-            return this.removeRecursive(root.getLeft(), key, c);
+        } else if (c.compare(key, root.key) < 0) {
+            return this.removeRecursive(root.left, key, c);
 
             // If key = root's key
         } else {
             // If root is a leaf
-            if (root.getLeft() == null && root.getRight() == null) {
-                // Set root as null
+            if (root.left == null && root.right == null) {
                 root = null;
-                // If root have 2 children
-            } else if (root.getLeft() != null && root.getRight() != null) {
-                // Initiate Node max as the successor of root in right sub-tree
+                
+            } else if (root.left != null && root.right != null) {   // If root have 2 children
                 Node min = this.findSuccessor(root, c);
-                // Set root's key = Node max's key
-                root.setKey(min.getKey());
-                /*
-        Remove Node max by calling recursive the process with key is Node max's
-        key. New parameter root will be root's right child.
-                Set root a new Right sub-tree after finishing remove the 
-                Successor.
-                 */
-                root.setRight(this.removeRecursive(root.getRight(), min.getKey(), c));
+                root.key = min.key;
+                root.right = this.removeRecursive(root.right, min.key, c);
 
-                // If root have 1 child
-            } else {
-                /*
-        Set root as root's child, by this the connection will not lost. The 
-        link will be like this, parent -> root -> child. 
-        Because we set root = root's child, therefor: parent -> child
-                 */
+                
+            } else {    // If root have 1 child
+                
                 // If root have left child
-                if (root.getLeft() != null) {
-                    // Set root = root's left child
-                    root = root.getLeft();
-                    // If root have right child
-                } else {
-                    // Set root = root's right child
-                    root = root.getRight();
+                if (root.left != null) {
+                    root = root.left;
+                    
+                } else {    // If root have right child
+                    root = root.right;
                 }
             }
         }

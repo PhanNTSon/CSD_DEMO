@@ -64,10 +64,7 @@ public class LinkedList {
     }
 
     public void add(int index, int data) {
-        if (index < 0 || index > this.size - 1) {
-            System.out.println("INVALID INDEX");
-            return;
-        } else if (index == 0) {
+        if (index == 0) {
             this.addFirst(data);
             return;
         }
@@ -86,10 +83,7 @@ public class LinkedList {
     }
 
     public Node removeFirst() {
-        if (this.isEmpty()) {
-            System.out.println("LIST EMPTY");
-            return null;
-        }
+        
         Node returnNode = this.head;
         this.head = this.head.next;
         this.size--;
@@ -97,10 +91,7 @@ public class LinkedList {
     }
 
     public Node removeLast() {
-        if (this.isEmpty()) {
-            System.out.println("LIST EMPTY");
-            return null;
-        }
+        
         Node returnNode = this.tail;
         Node current = this.head;
         while (current.next != this.tail) {
@@ -113,13 +104,7 @@ public class LinkedList {
     }
 
     public Node remove(int index) {
-        if (this.isEmpty()) {
-            System.out.println("LIST EMPTY");
-            return null;
-        } else if (index < 0 || index > this.size) {
-            System.out.println("INVALID INDEX");
-            return null;
-        }
+        
         Node current = this.head;
         Node previous = null;
         int count = 0;
@@ -153,16 +138,6 @@ public class LinkedList {
     }
 
     public void swap(int index1, int index2) {
-        if (index1 < 0 || index1 > this.size) {
-            System.out.println("INVALID INDEX");
-            return;
-        } else if (index2 < 0 || index2 > this.size) {
-            System.out.println("INVALID INDEX");
-            return;
-        } else if (index1 == index2) {
-            System.out.println("INVALID INDEX");
-            return;
-        }
 
         Node prev1 = null;
         Node prev2 = null;
@@ -185,30 +160,20 @@ public class LinkedList {
             count++;
         }
 
-        /*
-        If Node 1 is not head then Prev1->next = Node2
-        Else head = Node2
-        */
-        if (prev1 != null) {
-            prev1.next = curr2;
-        } else {
-            this.head = curr2;
+        int temp = curr1.data;
+        curr1.data = curr2.data;
+        curr2.data = temp;
+    }
+    
+    public void sort(Node start, Node end) {
+        for (Node i = start; i != end; i = i.next) {
+            for (Node j = start; j != end; j = j.next) {
+                if (j.data > j.next.data){
+                    int temp = j.data;
+                    j.data = j.next.data;
+                    j.next.data = temp;
+                }
+            }
         }
-        
-        /*
-        Similar to above
-        */
-        if (prev2 != null) {
-            prev2.next = curr1;
-        } else {
-            this.head = curr1;
-        }
-        
-        /*
-        Switching the link of next Node of Node 1 and Node 2
-        */
-        Node temp = curr1.next;
-        curr1.next = curr2.next;
-        curr2.next = temp;
     }
 }

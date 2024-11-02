@@ -9,23 +9,13 @@ package Stack;
  * @author ADMIN
  */
 public class Node {
-    private Object data;
-    private Node next;
+     Object data;
+     Node next;
 
     public Node(Object data) {
         this.data = data;
         this.next = null;
     }
 
-    public Node getNext() {
-        return next;
-    }
-
-    public void setNext(Node next) {
-        this.next = next;
-    }
     
-    public Object getData(){
-        return this.data;
-    }
 }

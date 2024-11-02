@@ -9,10 +9,11 @@ package Tree;
  * @author ADMIN
  * @param <T>
  */
-public class Node{
-    private Object key;
-    private Node left;
-    private Node right;
+public class Node {
+
+    Object key;
+    Node left;
+    Node right;
 
     public Node(Object key) {
         this.key = key;
@@ -20,35 +21,9 @@ public class Node{
         this.right = null;
     }
 
-    public Object getKey() {
-        return key;
-    }
-
-    public void setKey(Object key) {
-        this.key = key;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public void setLeft(Node left) {
-        this.left = left;
-    }
-
-    public Node getRight() {
-        return right;
-    }
-
-    public void setRight(Node right) {
-        this.right = right;
-    }
-
     @Override
     public String toString() {
         return this.key.toString();
     }
 
-   
-    
 }

@@ -12,15 +12,13 @@ package Queue;
  * @param <T>
  */
 public class LinkedDeque {
+
     private Node front;
     private Node back;
-    private int size, cap;
 
     public LinkedDeque(int cap) {
         this.front = null;
         this.back = null;
-        this.cap = cap;
-        this.size = 0;
     }
 
     public Node getFront() {
@@ -39,108 +37,77 @@ public class LinkedDeque {
         this.back = back;
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public int getCap() {
-        return cap;
-    }
-
-    public void setCap(int cap) {
-        this.cap = cap;
-    }
-
-    
-    
     public boolean isEmpty() {
-        return this.size == 0;
-    }
-    
-    public boolean isFull(){
-        return this.size == this.cap;
+        return this.front == null;
     }
 
     public void clear() {
         this.front = null;
         this.back = null;
-        this.size = 0;
     }
 
     public void display() {
         Node current = this.front;
         while (current != null) {
-            System.out.print(current.getData() + ", ");
-            current = current.getNext();
+            System.out.print(current.data + ", ");
+            current = current.next;
         }
         System.out.println();
     }
 
     public void enQueueFront(Object data) {
-        if (this.isFull()){
-            throw new IndexOutOfBoundsException();
-        }
+
         Node newNode = new Node(data);
         if (this.isEmpty()) {
             this.front = newNode;
             this.back = newNode;
         } else {
-            newNode.setNext(this.front);
-            this.front.setPrevious(newNode);
+            newNode.next = this.front;
+            this.front.previous = newNode;
             this.front = newNode;
         }
-        this.size++;
     }
 
     public Object deQueueFront() {
         if (this.isEmpty()) {
-            throw new ArrayStoreException();
+            return null;
         }
-        Object returnData = this.front.getData();
-        if (this.size == 1) {
+        Object returnData = this.front.data;
+        if (this.back == this.front) {
             this.back = null;
             this.front = null;
         } else {
-            this.front = this.front.getNext();
-            this.front.setPrevious(null);
+            this.front = this.front.next;
+            this.front.previous = null;
         }
-        this.size--;
         return returnData;
     }
-    
+
     public void enQueueBack(Object data) {
-        if (this.isFull()){
-            throw new IndexOutOfBoundsException();
-        }
+
         Node newNode = new Node(data);
         if (this.isEmpty()) {
             this.front = newNode;
             this.back = newNode;
         } else {
-            this.back.setNext(newNode);
-            newNode.setPrevious(this.back);
+            this.back.next = newNode;
+            newNode.previous = this.back;
             this.back = newNode;
         }
-        this.size++;
     }
 
     public Object deQueueBack() {
         if (this.isEmpty()) {
-            throw new ArrayStoreException();
+            return null;
         }
-        Object returnData = this.back.getData();
-        if (this.size == 1) {
+        Object returnData = this.back.data;
+        if (this.back == this.front) {
             this.back = null;
             this.front = null;
         } else {
-            this.back = this.back.getPrevious();
-            this.back.setNext(null);
+            this.back = this.back.previous;
+            this.back.next = null;
         }
-        this.size--;
         return returnData;
     }
 }
